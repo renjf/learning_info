@@ -1,0 +1,48 @@
+1 头文件包含：
+#include <locale.h>
+#include <libintl.h>
+2 定义宏定义(完全是为了方便，而且几乎所有程序都这样)
+
+#define _(S) gettext(S)
+
+3 设置locale和mo文件将要存放的路径，关联程序
+
+	setlocale(LC_ALL,"");
+	bindtextdomain(PACKAGE, "locale");
+	textdomain(PACKAGE);
+
+4 制作po文件（示例程序是：jian_gettext.c）
+
+	xgettext -a jian_gettext.c -o jian_gettext.po  --from-code=utf-8
+5 修改生成的 jian_gettext.po 文件，将下面行中的 CHARSET 换成 UTF-8
+
+	"Content-Type: text/plain; charset=CHARSET\n"
+
+	再翻译其中的string(其他的string不要改)：
+
+#: jian_gettext.c:14
+#, c-format
+	msgid "Hello,GetText!\n"
+	msgstr "你好，GetText！\n"
+
+6 生成mo文件，
+
+	msgfmt jian_gettext.po -o jian_gettext.mo
+
+
+
+
+7 创建存放mo文件的目录，（例子使用./locale）
+
+	mkdir -pv locale/zh_CN/LC_MESSAGES/
+	cp -v jian_gettext.mo locale/zh_CN/LC_MESSAGES/
+
+	8 运行程序，你的程序应该是这样编译好的：
+
+	gcc -Wall -o jian_gettext jian_gettext.c
+
+	没有错误，上面的程序运行结果如下：
+
+# ./jian_gettext
+	你好，GetText！
+
